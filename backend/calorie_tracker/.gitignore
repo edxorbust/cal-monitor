@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+build/
+dist/
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+ENV.bak/
+venv.bak/
+
+
+# Django stuff:
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static_root/
+__pycache__/
+*.log
