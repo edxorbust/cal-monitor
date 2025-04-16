@@ -1,9 +1,10 @@
-from django.urls import path
+from django.urls import path 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import views
 
 urlpatterns = [
     path('profile/create/', views.UserProfileListCreate.as_view(), name='create-profile'),
-    path('profile/<int:pk>/', views.UserProfileDetailView.as_view(), name='profile-detail'),
+    path('profile/detail/', views.UserProfileRetrieveUpdateView.as_view(), name='profile-detail'),
     path('predefined-meals/', views.PredefinedMealListCreate.as_view(), name='predefined-meal-list-create'),
     path('predefined-meals/<int:id>/', views.PredefinedMealDetailView.as_view(), name='predefined-meal-retrieve'),
     path('predefined-meals/<int:id>/delete/', views.PredefinedMealDeleteView.as_view(), name='predefined-meal-delete'),
@@ -51,4 +52,8 @@ urlpatterns = [
     path('burned-calories-entry/', views.BurnedCaloriesEntryListView.as_view(), name='burned-calories-list'),
     path('burned-calories-entry/<int:id>/', views.BurnedCaloriesEntryDetailView.as_view(), name='burned-calories-detail'),
     path('burned-calories-entry/<int:id>/delete/', views.BurnedCaloriesEntryDeleteView.as_view(), name='burned-calories-delete'),
+    path('auth/me/', views.MeView.as_view(), name='auth-me'),
+    path('auth/register/', views.RegisterView.as_view(), name='auth-register'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

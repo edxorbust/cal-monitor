@@ -2,20 +2,33 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.db.models import Q
 from django.utils.timezone import now
+from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from datetime import timedelta
 from rest_framework import generics, views
 from .models import UserProfile, PredefinedMeal, CustomMeal, Recipe, IngredientCategory, Ingredient, RecipeIngredient, CalorieEntry, CategoryExercise, Exercise, ExerciseEntry, BurnedCaloriesEntry
-from .serializers import UserProfileSerializer, PredefinedMealSerializer, CustomMealSerializer, RecipeSerializer, IngredientCategorySerializer, IngredientSerializer, RecipeIngredientSerializer, CalorieEntrySerializer, ExerciseSerializer, CategoryExerciseSerializer, ExerciseEntrySerializer, BurnedCaloriesEntrySerializer, CaloriesBalanceSerializer
+from .serializers import UserProfileSerializer, PredefinedMealSerializer, CustomMealSerializer, RecipeSerializer, IngredientCategorySerializer, IngredientSerializer, RecipeIngredientSerializer, CalorieEntrySerializer, ExerciseSerializer, CategoryExerciseSerializer, ExerciseEntrySerializer, BurnedCaloriesEntrySerializer, CaloriesBalanceSerializer, UserSerializer, RegisterSerializer
 
 class UserProfileListCreate(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-class UserProfileDetailView(generics.RetrieveAPIView):
-    queryset = UserProfile.objects.all()
+    def perform_create(self, serializer):
+        user = self.request.user
+        if UserProfile.objects.filter(user=user).exists():
+            raise ValidationError("El usuario ya tiene un perfil creado.")
+        serializer.save(user=self.request.user)
+
+class UserProfileRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Retorna el perfil del usuario autenticado
+        return UserProfile.objects.get(user=self.request.user)
 
 
 
@@ -542,4 +555,13 @@ class CaloriesBalanceView(views.APIView):
         })
 
 
+class MeView(views.APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+    
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer

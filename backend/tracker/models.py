@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Relacionamos con el usuario
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)  # Relacionamos con el usuario
     is_creator = models.BooleanField(default=False)
     #Información de usuario
     name= models.CharField(max_length=100)
