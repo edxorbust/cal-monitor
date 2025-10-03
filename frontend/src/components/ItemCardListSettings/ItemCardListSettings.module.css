@@ -1,0 +1,41 @@
+.containerFlexLeft {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.iconBox {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 1.5rem;
+  padding: 10px;
+  background-color: #c6dfff;
+  border-radius: 8px;
+}
+
+.exerciseDescriptionBox {
+  margin-left: 3vw;
+  display: flex;
+  align-items: center;
+}
+
+.titleWater {
+  font-size: 0.8rem;
+}
+
+.exerciseTimeFont {
+  font-size: 0.7rem;
+  color: #0575e6;
+  text-align: left;
+}
+
+.containerFlex {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}

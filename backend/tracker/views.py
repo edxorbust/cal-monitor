@@ -8,8 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from datetime import timedelta
 from rest_framework import generics, views
-from .models import UserProfile, PredefinedMeal, CustomMeal, Recipe, IngredientCategory, Ingredient, RecipeIngredient, CalorieEntry, CategoryExercise, Exercise, ExerciseEntry, BurnedCaloriesEntry
-from .serializers import UserProfileSerializer, PredefinedMealSerializer, CustomMealSerializer, RecipeSerializer, IngredientCategorySerializer, IngredientSerializer, RecipeIngredientSerializer, CalorieEntrySerializer, ExerciseSerializer, CategoryExerciseSerializer, ExerciseEntrySerializer, BurnedCaloriesEntrySerializer, CaloriesBalanceSerializer, UserSerializer, RegisterSerializer
+from .models import UserProfile, PredefinedMeal, CustomMeal, Recipe, IngredientCategory, Ingredient, RecipeIngredient, CalorieEntry, CategoryExercise, Exercise, ExerciseEntry, BurnedCaloriesEntry, WaterEntry
+from .serializers import UserProfileSerializer, PredefinedMealSerializer, CustomMealSerializer, RecipeSerializer, IngredientCategorySerializer, IngredientSerializer, RecipeIngredientSerializer, CalorieEntrySerializer, ExerciseSerializer, CategoryExerciseSerializer, ExerciseEntrySerializer, BurnedCaloriesEntrySerializer, CaloriesBalanceSerializer, UserSerializer, RegisterSerializer, WaterEntrySerializer
 
 class UserProfileListCreate(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
@@ -352,8 +352,7 @@ class ExerciseCreateView(generics.ListCreateAPIView):
     serializer_class = ExerciseSerializer
 
     def perform_create(self, serializer):
-        exercise = serializer.save(user_profile=self.request.user.userprofile)
-        exercise.total_calories_burned()  
+        serializer.save(user_profile=self.request.user.userprofile)
 
 class ExerciseListView(generics.ListAPIView):
     queryset = Exercise.objects.all()
@@ -565,3 +564,51 @@ class MeView(views.APIView):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+
+
+class WaterEntryCreateView(generics.CreateAPIView):
+    serializer_class = WaterEntrySerializer
+
+    def perform_create(self, serializer):
+        user_profile = self.request.user.userprofile
+        date = serializer.validated_data.get('date')
+        amount = serializer.validated_data.get('amount')
+
+        serializer.save(user_profile=user_profile, date=date, amount=amount)
+
+class WaterEntryListView(generics.ListAPIView):
+    serializer_class = WaterEntrySerializer
+
+    def get_queryset(self):
+        user_profile = self.request.user.userprofile
+        queryset = WaterEntry.objects.filter(user_profile=user_profile)
+
+        date_param = self.request.query_params.get('date')
+        range_params = self.request.query_params.get('range')
+
+        today = timezone.now().date()
+
+        if date_param:
+            # Filtrar por fecha específica
+            queryset = queryset.filter(date=date_param)
+        elif range_params == 'today':
+            # Filtrar por hoy
+            queryset = queryset.filter(date=today)
+        elif range_params == 'weekly':
+            # Filtrar por semana actual
+            start_of_week = today - timedelta(days=today.weekday())
+            queryset = queryset.filter(date__gte=start_of_week)
+        elif range_params == 'monthly':
+            # Filtrar por mes actual
+            queryset = queryset.filter(date__month=today.month, date__year=today.year)
+
+        return queryset
+
+class WaterEntryDeleteView(generics.DestroyAPIView):
+    serializer_class = WaterEntrySerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        # Asegura que solo pueda eliminar entradas de agua pertenecientes a su perfil
+        user_profile = self.request.user.userprofile
+        return WaterEntry.objects.filter(user_profile=user_profile)

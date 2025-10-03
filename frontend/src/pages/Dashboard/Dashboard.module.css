@@ -1,0 +1,173 @@
+.formdiv{
+    display: flex;
+    padding: 10px 10px;
+    align-items: center;
+    
+}
+
+.titleCard{
+    font-size: 0.6rem;
+}
+
+.linksbox{
+    display: block;
+    margin-top: 5px;
+}
+
+.linksboxend{
+    margin-top: 30vh;
+}
+
+.h2LeftAlign {
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
+.containerFlex {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  
+}
+
+.containerFlexLeft {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blueGradientWaterLevel {
+  background: linear-gradient(to right, #7fb6ff 0%, #0575e6 70%, rgb(206, 237, 255) 30%, rgb(233, 247, 255) 100%);
+  height: 5px;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 3px 0px;
+}
+
+.orangeGradientCaloriesLevel {
+  background: linear-gradient(to right, #fd9169 0%, var(--color-primary) 70%, rgb(255, 228, 196) 30%, rgb(255, 240, 245) 100%);
+  height: 5px;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 3px 0px;
+}
+
+.containerFlexMidSpace{
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  justify-content: space-between;
+  width: auto;
+  padding: 0px 10px;
+}
+
+.containerBlock{
+  display: block;
+}
+
+.containerCard{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  margin: 10px 7px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+}
+
+.titleCardBold{
+  font-weight: bold;
+
+}
+
+.plusButton {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #0575e6;
+  font-weight: bold;
+  width: 10%;
+  margin: 10px auto;
+}
+
+.titleWater{
+  font-size: 0.8rem;
+}
+
+.mainContainer {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  width: 95%;
+}
+
+.mainContainer::after {
+  content: "";
+  display: block;
+  height: var(--navbar-height);
+}
+
+.exerciseTimeFont{
+  font-size: 0.7rem;
+  color:#0575e6;
+  text-align: left;
+}
+
+.exerciseDescriptionBox{
+  margin-left: 3vw;
+}
+
+.iconBox {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 1.5rem;
+  padding: 10px;
+  background-color:#c6dfff;
+  border-radius: 8px;
+}
+
+@media (min-width: 321px) {
+  .linksboxend{
+    margin-top: 40vh;
+  }
+  .titleCard{
+    font-size: 0.7rem;
+  }
+  .containerCard{
+    padding: 10px 20px;
+  }
+  .exerciseDescriptionBox{
+  margin-left: 5vw;
+  }
+  .iconBox {
+  font-size: 2rem;
+  }
+}
+
+
+@media (min-width: 394px) {
+  .linksboxend{
+    margin-top: 40vh;
+  }
+  .titleCard{
+    font-size: 0.8rem;
+  }
+  .titleWater{
+    font-size: 0.8rem;
+  }
+}
+
+
+
+@media (min-width: 1024px) {
+  .mainContainer {
+    width: auto;
+  }
+}

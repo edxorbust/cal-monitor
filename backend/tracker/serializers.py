@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserProfile, PredefinedMeal, CustomMeal, IngredientCategory, Ingredient, Recipe, RecipeIngredient, CalorieEntry, Exercise, CategoryExercise, ExerciseEntry, BurnedCaloriesEntry
+from .models import UserProfile, PredefinedMeal, CustomMeal, IngredientCategory, Ingredient, Recipe, RecipeIngredient, CalorieEntry, Exercise, CategoryExercise, ExerciseEntry, BurnedCaloriesEntry, WaterEntry
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -107,3 +107,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')  # ya no se necesita
         user = User.objects.create_user(**validated_data)  # usa create_user para hash automático
         return user
+    
+class WaterEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WaterEntry
+        fields = '__all__'
+        read_only_fields = ['user_profile','date']

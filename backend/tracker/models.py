@@ -5,6 +5,7 @@ from datetime import timedelta
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)  # Relacionamos con el usuario
+    image_url = models.URLField(max_length=500, blank=True, null=True)  # URL de la imagen del perfil
     is_creator = models.BooleanField(default=False)
     #Información de usuario
     name= models.CharField(max_length=100)
@@ -154,6 +155,7 @@ class UserProfile(models.Model):
 class PredefinedMeal(models.Model):
     user_profile = models.ForeignKey(UserProfile, related_name='predefined_meals', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     calories = models.IntegerField()
     carbs_serving = models.FloatField()  # Ración de hidratos de carbono
     habit_measurement_description = models.CharField(max_length=255)  # Ejemplo: "unidad", "taza"
@@ -167,6 +169,7 @@ class PredefinedMeal(models.Model):
 class CustomMeal(models.Model):
     user_profile = models.ForeignKey(UserProfile, related_name='custom_meals', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     portion = models.FloatField()  # Porción de la comida, por ejemplo: 200
     unit = models.CharField(max_length=10)  # Unidad de medida, por ejemplo: "gr" o "ml"
     total_carbs = models.FloatField()  # Total de carbohidratos en gramos, por ejemplo: 800
@@ -176,7 +179,7 @@ class CustomMeal(models.Model):
     
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=100)
-
+    image_path = models.CharField(max_length=255, blank=True, null=True)  # Ruta de la imagen de la categoría
     def __str__(self):
         return self.name
 
@@ -188,6 +191,7 @@ class Ingredient(models.Model):
     calories = models.FloatField()
     unit = models.CharField(max_length=10)  # Ejemplo: "gr", "ml"
     portion_size = models.FloatField()  # Tamaño de la porción en gramos o mililitros
+    image_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -201,6 +205,7 @@ class Recipe(models.Model):
     instructions = models.TextField(blank=True, null=True)
     portions = models.IntegerField(default=1)  # Número de porciones que rinde la receta
     preparation_time = models.IntegerField(default=0)  # Tiempo de preparación en minutos
+    image_url = models.URLField(max_length=500, blank=True, null=True)
 
     def total_calories(self):
         total = 0.0
@@ -249,6 +254,7 @@ class CalorieEntry(models.Model):
 
 class CategoryExercise(models.Model):
     name = models.CharField(max_length=100)
+    image_path = models.CharField(max_length=255, blank=True, null=True)  # Ruta de la imagen de la categoría
 
     def __str__(self):
         return self.name
@@ -256,14 +262,11 @@ class CategoryExercise(models.Model):
 class Exercise(models.Model):
     user_profile = models.ForeignKey(UserProfile, related_name='exercise', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    calories_burned_per_hour = models.FloatField()  # Calorías quemadas por hora de ejercicio
+    instructions = models.TextField()
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     duration = models.IntegerField()  # Duración del ejercicio en minutos
     category = models.ForeignKey(CategoryExercise, on_delete=models.CASCADE)
     total_calories = models.FloatField(default=0.0)  # Calorías totales quemadas en la sesión de ejercicio
-
-    def total_calories_burned(self):
-        self.total_calories = (self.calories_burned_per_hour / 60) * self.duration
-        self.save()
 
     def __str__(self):
         return self.name
@@ -272,6 +275,18 @@ class ExerciseEntry(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
+    duration = models.IntegerField(null=True, blank=True)  # Duración del ejercicio en minutos
+    total_calories = models.FloatField(null=True, blank=True)  # Calorías quemadas en la sesión de ejercicio
+
+    def save(self, *args, **kwargs):
+        if self.exercise:
+            if self.duration is None:
+                self.duration = self.exercise.duration
+                self.total_calories = self.exercise.total_calories
+            else:
+                self.total_calories = (self.exercise.total_calories * self.duration)/self.exercise.duration
+            
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.exercise.name} - {self.date}"
@@ -285,3 +300,12 @@ class BurnedCaloriesEntry(models.Model):
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.name} - {self.calories_burned} kcal - {self.date}"
+    
+
+class WaterEntry(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    amount = models.FloatField()  # Cantidad de agua consumida en mililitros
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_profile.user.username} - {self.amount} ml - {self.date}"

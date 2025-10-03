@@ -1,0 +1,67 @@
+.mainContainer {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  width: 95%;
+  max-width: 400px;
+}
+
+.mainContainer::after {
+  content: "";
+  display: block;
+  height: var(--navbar-height);
+}
+
+.containerFlexColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.weightContainer {
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.userPicture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #c6dfff;
+  font-size: 2rem;
+}
+
+.h3margin {
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.h4titleLeft {
+  text-align: left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 10px;
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  margin-top: 10px;
+}
+
+.exerciseTimeFont {
+  font-size: 0.7rem;
+  color: #0575e6;
+  text-align: center;
+}

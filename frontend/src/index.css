@@ -1,0 +1,169 @@
+:root {
+  font-family: "Baloo Da 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+
+  
+  --color-bg: #fff;
+  --color-primary: #0575e6;
+  --color-text-primary: #000000;
+  --color-text-secondary: #555555;
+  --color-form-field: #f2f7fd;
+
+  --max-width: 900px;
+  --primary-font: "Baloo Da 2", sans-serif;
+}
+
+.primaryFont {
+  font-family: "Baloo Da 2", sans-serif;
+}
+
+
+
+
+body {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  height: auto;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.logoCenter {
+  font-family: "Poetsen One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--color-primary);
+  font-size: 1.75rem;
+  position: absolute;
+  top: 20%;
+  left: 0%;
+  text-align: center;
+  width: 100%;
+}
+
+.formButton {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  width: 94%;
+  font-size: .9rem;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: #00000034 0px 5px 7px 0px;
+  transition: all 0.1s ease-in-out;
+  margin-top: 20px;
+}
+
+.formButton:active {
+  transform: translateY(4px);
+  box-shadow: #00000034 0px 0px 4px 0px;
+}
+
+input{
+  background-color: var(--color-form-field);
+  border: none;
+  border-radius: 10px;
+  padding: 15px 10px;
+  font-family: var(--primary-font);
+  width: 100%;
+}
+
+a{
+  color: var(--color-text-secondary);
+  text-underline-offset: 7px;
+  font-size: .8rem;
+}
+
+
+
+/* ============================= */
+/* 2. BASE (≥ 320px) */
+/* ============================= */
+
+body {
+  font-size: 1rem;
+}
+
+h1 {
+  font-size: 2rem; 
+}
+
+h2 {
+  font-size: 1rem; 
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--color-text-secondary);
+}
+input {
+  font-size: .8rem;
+}
+
+p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ============================= */
+/* 3. BREAKPOINT 1: Tablet (≥ 768px) */
+/* ============================= */
+
+@media (min-width: 768px) {
+  body {
+    font-size: 1.125rem; 
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  label {
+    font-size: 1.15rem;
+  }
+
+  input {
+  font-size: 1rem;
+}
+}
+
+/* ============================= */
+/* 4. BREAKPOINT 2: Desktop (≥ 1024px) */
+/* ============================= */
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 1.25rem; 
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  label {
+    font-size: 1.25rem;
+  }
+
+  main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+}
+
+

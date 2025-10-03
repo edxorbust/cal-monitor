@@ -1,0 +1,37 @@
+.formdiv{
+    display: flex;
+    padding: 10px 10px;
+    align-items: center;
+    
+}
+
+
+.linksbox{
+    display: block;
+    margin-top: 5px;
+}
+
+.linksboxend{
+    margin-top: 30vh;
+}
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  justify-content: center;
+  width: 95vw;
+}
+
+@media (min-width: 321px) {
+  .linksboxend{
+    margin-top: 40vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    width: var(--max-width);
+  }
+}

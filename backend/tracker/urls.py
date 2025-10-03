@@ -56,4 +56,7 @@ urlpatterns = [
     path('auth/register/', views.RegisterView.as_view(), name='auth-register'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('water-entry/', views.WaterEntryCreateView.as_view(), name='water-entry-list-create'),
+    path('water-entry/<int:id>/delete/', views.WaterEntryDeleteView.as_view(), name='water-entry-delete'),
+    path('water-entry/list/', views.WaterEntryListView.as_view(), name='water-entry-list'),
 ]
