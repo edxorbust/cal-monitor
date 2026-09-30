@@ -11,7 +11,7 @@ function Dashboard() {
       try {
         const response = await api.get("/user/profile/");
         setUser(response.data);
-      } catch (err) {
+      } catch {
         // Si no puede obtener el perfil, redirige al login
         navigate("/login");
       }

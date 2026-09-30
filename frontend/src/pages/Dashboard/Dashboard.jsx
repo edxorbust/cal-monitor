@@ -1,126 +1,169 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../../api/api";
-import { useNavigate } from "react-router-dom";
-import styles from "./Dashboard.module.css";
-import Navbar from "../../components/Navbar/Navbar";
+import { today, number } from "../../api/tracker";
+import useResource from "../../hooks/useResource";
+import useAction from "../../hooks/useAction";
+import {
+  Page,
+  Field,
+  Notice,
+  ResourceState,
+  Empty,
+  DeleteButton,
+  Stat,
+} from "../../components/Tracker/Tracker";
 
-function Dashboard() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
-
+export default function Dashboard() {
+  const [date, setDate] = useState(today());
+  const summary = useResource(`/summary/?date=${date}`);
+  const meals = useResource(`/meals/?date=${date}`, true);
+  const water = useResource(`/water/?date=${date}`, true);
+  const action = useAction();
+  const [amount, setAmount] = useState(250);
+  const addWater = (value) =>
+    action.run(async () => {
+      await api.post("/water/", { amount: Number(value), date });
+      water.reload();
+      summary.reload();
+    });
+  const data = summary.data;
   return (
-  <>
-    <div className={styles.mainContainer}>
-      <h2>Dashboard</h2>
-      <h3 className={styles.h2LeftAlign}>Calorias</h3>
-      <div className={styles.containerFlex}>
-        <div className={styles.containerCard}>
-          <div className={styles.titleCard}>Consumidas</div>
-          <div className={styles.titleCardBold}>0</div>
-        </div>
-        <div className={styles.containerCard}>
-          <div className={styles.titleCard}>Quemadas</div>
-          <div className={styles.titleCardBold}>0</div>
-        </div>
-      </div>
-      <div>
-          <div className={styles.containerFlexMidSpace}>
-            <div className={styles.titleWater}>
-            Restantes diarias:
+    <Page
+      title="Tu resumen diario"
+      subtitle="Registro de tu día a día."
+      date={date}
+      onDate={setDate}
+    >
+      <ResourceState resource={summary} />
+      {data && !summary.loading && !summary.error && (
+        <>
+          <div className="stats">
+            <Stat
+              label="Consumidas"
+              value={number(data.consumed)}
+              unit="kcal"
+            />
+            <Stat label="Quemadas" value={number(data.burned)} unit="kcal" />
+            <Stat label="Balance neto" value={number(data.net)} unit="kcal" />
+            <Stat
+              label={data.remaining >= 0 ? "Restantes" : "Sobre tu meta"}
+              value={number(Math.abs(data.remaining))}
+              unit="kcal"
+              tone="accent"
+            />
+          </div>
+          <p className="subtle">
+            Meta: {number(data.calorie_goal)} kcal · Restantes = meta −
+            consumidas + quemadas.{" "}
+            <Link className="inline-link" to="/profile">
+              Ajustar metas
+            </Link>
+          </p>
+        </>
+      )}
+      <div className="grid">
+        <section className="panel">
+          <h2>Agua</h2>
+          {data && !summary.loading && !summary.error && (
+            <>
+              <strong>
+                {number(data.water_ml)} / {number(data.water_goal_ml)} ml
+              </strong>
+              <progress
+                aria-label="Progreso de agua"
+                value={Math.min(data.water_ml, data.water_goal_ml)}
+                max={data.water_goal_ml}
+              />
+            </>
+          )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addWater(amount);
+            }}
+          >
+            <Field
+              label="Cantidad de agua (ml)"
+              type="number"
+              min="1"
+              max="10000"
+              step="any"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              required
+            />
+            <div className="actions">
+              <button className="primary" disabled={action.busy}>
+                Registrar agua
+              </button>
+              <button
+                type="button"
+                disabled={action.busy}
+                onClick={() => addWater(250)}
+              >
+                + 250 ml
+              </button>
+              <button
+                type="button"
+                disabled={action.busy}
+                onClick={() => addWater(500)}
+              >
+                + 500 ml
+              </button>
             </div>
-            <div className={styles.titleWater}>
-            200
-            </div>
-          </div>
-          <div className={styles.orangeGradientCaloriesLevel}>
-          </div>   
+          </form>
+          <Notice error>{action.error}</Notice>
+          <ResourceState resource={water} />
+          {!water.loading &&
+            !water.error &&
+            (!water.data?.length ? (
+              <Empty>No has registrado agua para esta fecha.</Empty>
+            ) : (
+              water.data.map((item) => (
+                <div className="row" key={item.id}>
+                  <strong>{number(item.amount)} ml</strong>
+                  <DeleteButton
+                    disabled={action.busy}
+                    onClick={() =>
+                      action.run(async () => {
+                        await api.delete(`/water/${item.id}/`);
+                        water.reload();
+                        summary.reload();
+                      })
+                    }
+                  />
+                </div>
+              ))
+            ))}
+        </section>
+        <section className="panel">
+          <h2>Comidas del día</h2>
+          <ResourceState resource={meals} />
+          {!meals.loading &&
+            !meals.error &&
+            (!meals.data?.length ? (
+              <Empty>Tu diario está vacío. Registra tu primera comida.</Empty>
+            ) : (
+              meals.data.map((meal) => (
+                <div className="row" key={meal.id}>
+                  <strong>{meal.name}</strong>
+                  <span>{number(meal.calories)} kcal</span>
+                </div>
+              ))
+            ))}
+          <p>
+            <Link className="inline-link" to="/food">
+              Registrar o editar comidas →
+            </Link>
+          </p>
+          <p>
+            <Link className="inline-link" to="/exercises">
+              Registrar actividad →
+            </Link>
+          </p>
+        </section>
       </div>
-      <h3 className={styles.h2LeftAlign}>Agua</h3>
-      <div>
-        <div className={styles.containerFlexMidSpace}>
-          <div className={styles.titleWater}>
-            Litros diarios consumidos:
-          </div>
-          <div className={styles.titleWater}>
-            1.3 L
-          </div>
-        </div>
-        <div className={styles.blueGradientWaterLevel}>
-        </div>
-      </div>
-      <h3 className={styles.h2LeftAlign}>Comida</h3>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-meat'  ></i> 
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Seco de carne</div>
-          <div className={styles.exerciseTimeFont}>900 cal</div>
-        </div>
-      </div>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-bowl-noodles'  ></i>   
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Fideos</div>
-          <div className={styles.exerciseTimeFont}>200 cal</div>
-        </div>
-      </div>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-meat'  ></i> 
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Carne asada</div>
-          <div className={styles.exerciseTimeFont}>700 cal</div>
-        </div>
-      </div>
-      <div className={styles.plusButton}>
-            +
-      </div>
-      <h3 className={styles.h2LeftAlign}>Ejercicios</h3>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-running'  ></i> 
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Morning Run</div>
-          <div className={styles.exerciseTimeFont}>30 min</div>
-        </div>
-      </div>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-dumbbell'  ></i>  
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Entrenamiento con pesas</div>
-          <div className={styles.exerciseTimeFont}>45 min</div>
-        </div>
-      </div>
-      <div className={styles.containerFlexLeft}>
-        <div className={styles.iconBox}>
-          <i class='bx  bx-dumbbell'  ></i>  
-        </div>
-        <div className={styles.exerciseDescriptionBox}>
-          <div className={styles.titleWater}>Entrenamiento con pesas</div>
-          <div className={styles.exerciseTimeFont}>45 min</div>
-        </div>
-      </div>
-      <div className={styles.plusButton}>
-            +
-      </div>
-    </div>
-    <Navbar />
-  </>
+    </Page>
   );
 }
-
-export default Dashboard;

@@ -1,0 +1,50 @@
+.tracker { max-width: 1080px; margin: auto; padding: 38px 28px 70px; text-align: left; color: #172b41; font: 16px/1.5 system-ui, sans-serif; }
+.tracker * { box-sizing: border-box; }
+.tracker-header { display:flex; justify-content:space-between; gap:24px; align-items:center; margin-bottom:24px; }
+.tracker .eyebrow { font-size:10px; letter-spacing:2px; color:#526d83; font-weight:700; }
+.tracker h1 {font-size:34px; letter-spacing:-1px; margin:8px 0; line-height:1.15;}
+.tracker h2 {font-size:20px; margin:0 0 16px;}
+.tracker h3 {font-size:16px; margin:0 0 8px;}
+.tracker p {font-size:14px; color:#52657b; margin:8px 0 16px;}
+.tracker-nav {display:flex; gap:6px; padding:6px; background:#edf3f8; border-radius:14px; margin-bottom:30px; overflow-x:auto;}
+.tracker-nav a {flex:1; text-align:center; text-decoration:none; padding:11px 13px; font-size:14px; border-radius:10px; color:#48617b; white-space:nowrap;}
+.tracker-nav a.active {background:#fff; color:#145eb0; box-shadow:0 2px 5px #193b5a0a; font-weight:700;}
+.tracker .panel {padding:24px; border:1px solid #dfe8f0; border-radius:18px; background:white; margin-bottom:20px;}
+.tracker .grid {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; align-items:start;}
+.tracker .stats {display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:24px;}
+.tracker .stat {border-radius:16px; background:#f1f6fa; padding:22px 18px;}
+.tracker .stat span {font-size:12px; color:#52657b; display:block; margin-bottom:8px;}
+.tracker .stat strong {display:block; font-size:28px; letter-spacing:-1px;}
+.tracker small {font-size:12px; font-weight:400; letter-spacing:0;}
+.tracker .stat.accent {background:#165fab; color:white;}
+.tracker .stat.accent span {color:#d5e8ff;}
+.tracker .field,.tracker .date-label {display:flex; flex-direction:column; gap:6px; font:600 12px system-ui; color:#48617b; margin:0 0 16px;}
+.tracker input,.tracker select {width:100%; font:400 15px system-ui; padding:12px; border:1px solid #d9e3ec; border-radius:9px; background:#fbfdff; color:#172b41; min-width:0;}
+.tracker input:focus,.tracker select:focus {outline:2px solid #5398dc; outline-offset:2px;}
+.tracker button {font:600 13px system-ui; cursor:pointer; border:1px solid #d4e2ed; border-radius:9px; padding:11px 15px; background:#f2f7fb; color:#155a9d;}
+.tracker button.primary {background:#1767b8; border-color:#1767b8; color:white;}
+.tracker button:disabled {opacity:.5; cursor:wait;}
+.tracker .text-button {padding:7px 9px; background:transparent; border:0;}
+.tracker .danger {color:#b34140;}
+.tracker .actions {display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.tracker .row {display:flex; justify-content:space-between; align-items:center; gap:14px; padding:15px 0; border-bottom:1px solid #e9eff5;}
+.tracker .row:last-child {border-bottom:0;}
+.tracker .row p {margin:4px 0 0; font-size:12px;}
+.tracker .row strong {font-size:14px; overflow-wrap:anywhere;}
+.tracker .row-actions {display:flex; align-items:center; gap:4px; flex-shrink:0;}
+.tracker .empty {padding:26px 12px; color:#6b7f92; font-size:14px; text-align:center; border:1px dashed #dce6ef; border-radius:12px;}
+.tracker .notice {padding:12px 15px; background:#edf7f2; color:#23734d; border-radius:10px; overflow-wrap:anywhere;}
+.tracker .notice.error {background:#fff1ef; color:#9a3930;}
+.tracker .subtle {color:#6b7f92; font-size:12px;}
+.tracker .split {display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.tracker progress {width:100%; height:12px; accent-color:#2276c4; margin:14px 0;}
+.tracker .ingredient-line {display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto; gap:8px; align-items:start; margin-bottom:10px;}
+.tracker .ingredient-line label {margin:0;}
+.tracker .badge {display:inline-block; padding:4px 9px; border-radius:6px; background:#edf5fd; color:#175d9b; font-size:12px;}
+.tracker a.inline-link {color:#1663ac; font-size:14px;}
+@media(max-width:700px) {
+ .tracker {padding:24px 16px 40px;} .tracker h1 {font-size:28px;} .tracker-header {align-items:start; flex-direction:column; gap:8px;}
+ .tracker .date-label {width:100%;} .tracker .grid {grid-template-columns:1fr;gap:0;} .tracker .stats {grid-template-columns:1fr 1fr;}
+ .tracker .panel {padding:18px;} .tracker-nav a {padding:9px 10px; font-size:12px;}
+ .tracker .stat {padding:16px;} .tracker .stat strong {font-size:25px;} .tracker .row {align-items:flex-start;}
+}

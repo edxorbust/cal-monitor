@@ -8,26 +8,26 @@ class UserProfile(models.Model):
     image_url = models.URLField(max_length=500, blank=True, null=True)  # URL de la imagen del perfil
     is_creator = models.BooleanField(default=False)
     #Información de usuario
-    name= models.CharField(max_length=100)
-    lastname= models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=10)
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=50)
-    province = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    birthdate = models.DateField()
-    age = models.PositiveIntegerField()
+    name= models.CharField(max_length=100, blank=True)
+    lastname= models.CharField(max_length=100, blank=True)
+    email = models.EmailField(blank=True)
+    phone_number = models.CharField(max_length=10, blank=True)
+    address = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=50, blank=True)
+    province = models.CharField(max_length=50, blank=True)
+    country = models.CharField(max_length=50, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    age = models.PositiveIntegerField(null=True, blank=True)
     gender_choices = [
         ('M', 'Masculino'),
         ('F', 'Femenino'),
         ('O', 'No binario'),
     ]
-    gender = models.CharField(max_length=1, choices=gender_choices)
-    notes = models.TextField()
+    gender = models.CharField(max_length=1, choices=gender_choices, blank=True)
+    notes = models.TextField(blank=True)
 
     #Historial Clinico
-    reason_of_consult = models.TextField()
+    reason_of_consult = models.TextField(blank=True)
     blood_type_choices = [
         ('A+', 'A+'),
         ('A-', 'A-'),
@@ -38,36 +38,36 @@ class UserProfile(models.Model):
         ('O+', 'O+'),
         ('O-', 'O-'),
     ]
-    blood_type = models.CharField(max_length=3, choices=blood_type_choices)
-    surgeries = models.TextField()
-    allergies = models.TextField()
-    previous_diagnoses = models.TextField()
-    previous_treatments = models.TextField()
-    family_history = models.TextField()
-    hashtag = models.CharField(max_length=100)
+    blood_type = models.CharField(max_length=3, choices=blood_type_choices, blank=True)
+    surgeries = models.TextField(blank=True)
+    allergies = models.TextField(blank=True)
+    previous_diagnoses = models.TextField(blank=True)
+    previous_treatments = models.TextField(blank=True)
+    family_history = models.TextField(blank=True)
+    hashtag = models.CharField(max_length=100, blank=True)
 
     #Información de estilo de vida
     #work
-    work_type = models.TextField()
-    description_work = models.TextField()
-    work_hours = models.PositiveIntegerField()
+    work_type = models.TextField(blank=True)
+    description_work = models.TextField(blank=True)
+    work_hours = models.PositiveIntegerField(null=True, blank=True)
     stress_level = [
         ('0', 'Ninguno'),
         ('1', 'Ocasional'),
         ('2', 'Repetitivo'),
         ('3', 'Crónico'),
     ]
-    stress_level = models.CharField(max_length=1, choices=stress_level)
+    stress_level = models.CharField(max_length=1, choices=stress_level, blank=True)
 
     #physical activity
-    physical_activity = models.TextField()
+    physical_activity = models.TextField(blank=True)
 
     #diet habits
-    unliked_foods = models.TextField()
-    liked_foods = models.TextField()
-    breakfast = models.TextField()
-    lunch = models.TextField()
-    dinner = models.TextField()
+    unliked_foods = models.TextField(blank=True)
+    liked_foods = models.TextField(blank=True)
+    breakfast = models.TextField(blank=True)
+    lunch = models.TextField(blank=True)
+    dinner = models.TextField(blank=True)
     
     #toxic habits
     smoking_frecuency = [
@@ -84,8 +84,8 @@ class UserProfile(models.Model):
         ('6week','6 veces a la semana'),
         ('daily','Diario'),
     ]
-    smoking_frecuency = models.CharField(max_length=25, choices=smoking_frecuency)
-    smoking_quantity = models.PositiveIntegerField()
+    smoking_frecuency = models.CharField(max_length=25, choices=smoking_frecuency, blank=True)
+    smoking_quantity = models.PositiveIntegerField(null=True, blank=True)
     alcohol_frecuency = [
        ('no','No'),
         ('ex','Ex bebedor'),
@@ -100,8 +100,8 @@ class UserProfile(models.Model):
         ('6week','6 veces a la semana'),
         ('daily','Diario'),
     ]
-    alcohol_frecuency = models.CharField(max_length=25, choices=alcohol_frecuency)
-    alcohol_quantity = models.PositiveIntegerField()
+    alcohol_frecuency = models.CharField(max_length=25, choices=alcohol_frecuency, blank=True)
+    alcohol_quantity = models.PositiveIntegerField(null=True, blank=True)
     drug_frecuency = [
        ('no','No'),
         ('ex','Ex consumidor'),
@@ -116,12 +116,12 @@ class UserProfile(models.Model):
         ('6week','6 veces a la semana'),
         ('daily','Diario'),
     ]
-    drug_frecuency = models.CharField(max_length=25, choices=drug_frecuency)
-    drug_quantity = models.PositiveIntegerField()
+    drug_frecuency = models.CharField(max_length=25, choices=drug_frecuency, blank=True)
+    drug_quantity = models.PositiveIntegerField(null=True, blank=True)
 
     #Información de salud
-    weight = models.FloatField()
-    height = models.FloatField()
+    weight = models.FloatField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
     activity_level_choices = [
         ('1', 'Sedentario'),
         ('2', 'Ligeramente activo'),
@@ -129,15 +129,19 @@ class UserProfile(models.Model):
         ('4', 'Altamente activo'),
         ('5', 'Atleta'),
     ]
-    activity_level = models.CharField(max_length=1, choices=activity_level_choices)
+    activity_level = models.CharField(max_length=1, choices=activity_level_choices, blank=True)
     goal_choices = [
         ('P', 'Perder peso'),
         ('G', 'Ganar peso'),
         ('M', 'Mantener peso'),
     ]
-    goal = models.CharField(max_length=1, choices=goal_choices)
-    strategy = models.TextField()
+    goal = models.CharField(max_length=1, choices=goal_choices, blank=True)
+    strategy = models.TextField(blank=True)
 
+
+    daily_calorie_goal = models.PositiveIntegerField(default=2000)
+    water_goal_ml = models.PositiveIntegerField(default=2000)
+    goal_weight = models.FloatField(null=True, blank=True)
 
     def get_daily_calories(self):
         today = timezone.now().date()
@@ -187,7 +191,7 @@ class IngredientCategory(models.Model):
 class Ingredient(models.Model):
     user_profile = models.ForeignKey(UserProfile, related_name='ingredient', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(IngredientCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(IngredientCategory, on_delete=models.SET_NULL, null=True, blank=True)
     calories = models.FloatField()
     unit = models.CharField(max_length=10)  # Ejemplo: "gr", "ml"
     portion_size = models.FloatField()  # Tamaño de la porción en gramos o mililitros
@@ -242,7 +246,7 @@ class CalorieEntry(models.Model):
     portion = models.FloatField(null=True, blank=True)  # Porción consumida en unidad de la comida
     total_calories = models.FloatField()  # Calorías resultantes de esa porción
     
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.localdate, db_index=True)
 
     class Meta:
         ordering = ['-date']
@@ -274,7 +278,7 @@ class Exercise(models.Model):
 class ExerciseEntry(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.localdate, db_index=True)
     duration = models.IntegerField(null=True, blank=True)  # Duración del ejercicio en minutos
     total_calories = models.FloatField(null=True, blank=True)  # Calorías quemadas en la sesión de ejercicio
 
@@ -296,7 +300,7 @@ class BurnedCaloriesEntry(models.Model):
     name = models.CharField(max_length=100)  # Nombre del ejercicio
     calories_burned = models.FloatField()  # Calorías quemadas en la sesión de ejercicio
     duration = models.IntegerField()  # Duración del ejercicio en minutos
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.localdate, db_index=True)
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.name} - {self.calories_burned} kcal - {self.date}"
@@ -305,7 +309,16 @@ class BurnedCaloriesEntry(models.Model):
 class WaterEntry(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     amount = models.FloatField()  # Cantidad de agua consumida en mililitros
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.localdate, db_index=True)
 
     def __str__(self):
         return f"{self.user_profile.user.username} - {self.amount} ml - {self.date}"
+
+class MealIngredient(models.Model):
+    """Snapshot of an ingredient portion; historical meals survive catalog edits."""
+    meal = models.ForeignKey(CalorieEntry, related_name='items', on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100)
+    quantity = models.FloatField()
+    unit = models.CharField(max_length=10)
+    calories = models.FloatField()

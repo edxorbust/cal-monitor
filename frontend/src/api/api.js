@@ -1,61 +1,50 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // CAMBIAR A LA URL DEL BACKEND!!!!
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+const api = axios.create({ baseURL, headers: { 'Content-Type': 'application/json' } });
+const authApi = axios.create({ baseURL });
+const publicPaths = ['/auth/token/', '/auth/register/', '/auth/token/refresh/'];
+let refreshPromise = null;
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
-  if (token && config.headers) {
+  if (token && !publicPaths.includes(config.url)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
 api.interceptors.response.use(
-    (response) => {
-      return response; // Si la respuesta es exitosa, la retornamos directamente
-    },
-    async (error) => {
-      const originalRequest = error.config;
-  
-      // Si el error es 401 (no autorizado) y no hemos intentado refrescar el token antes
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-  
-        // Tratamos de refrescar el token
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          try {
-            // Hacemos la solicitud para refrescar el token
-            const response = await axios.post('https://tu-api-backend.railway.app/api/auth/token/refresh/', { refresh: refreshToken });
-            
-            // Guardamos el nuevo access token
-            const newAccessToken = response.data.access;
-            localStorage.setItem('accessToken', newAccessToken);
-            
-            // Volvemos a intentar la solicitud original con el nuevo token
-            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-            return axios(originalRequest); // Hacemos la solicitud original de nuevo con el nuevo token
-          } catch (refreshError) {
-            // Si el refresh token también falla (por ejemplo, si también expiró), cerramos sesión
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = '/login'; // Redirige a la página de login
-          }
-        } else {
-          // Si no tenemos un refresh token, cerramos sesión
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/login'; // Redirige a la página de login
-        }
-      }
-      return Promise.reject(error); // Si la respuesta es otro error, lo rechazamos
+  (response) => response,
+  async (error) => {
+    const request = error.config;
+    if (error.response?.status !== 401 || !request || request._retry || publicPaths.includes(request.url)) {
+      return Promise.reject(error);
     }
-  );
-  
+    request._retry = true;
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      try {
+        if (!refreshPromise) {
+          refreshPromise = authApi.post('/auth/token/refresh/', { refresh })
+            .then(({ data }) => {
+              localStorage.setItem('accessToken', data.access);
+              return data.access;
+            })
+            .finally(() => { refreshPromise = null; });
+        }
+        const access = await refreshPromise;
+        request.headers.Authorization = `Bearer ${access}`;
+        return api(request);
+      } catch {
+        // An expired refresh token requires a new login.
+      }
+    }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = '/login';
+    return Promise.reject(error);
+  },
+);
 
 export default api;

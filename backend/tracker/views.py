@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.utils.timezone import now
 from django.contrib.auth.models import User
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from datetime import timedelta
 from rest_framework import generics, views
@@ -562,6 +562,8 @@ class MeView(views.APIView):
         return Response(serializer.data)
     
 class RegisterView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 

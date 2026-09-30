@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.db import transaction
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import UserProfile, PredefinedMeal, CustomMeal, IngredientCategory, Ingredient, Recipe, RecipeIngredient, CalorieEntry, Exercise, CategoryExercise, ExerciseEntry, BurnedCaloriesEntry, WaterEntry
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -101,11 +104,17 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("Las contraseñas no coinciden.")
+        try:
+            validate_password(data['password'], User(username=data['username'], email=data.get('email', '')))
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError({'password': list(exc.messages)})
         return data
 
     def create(self, validated_data):
         validated_data.pop('password2')  # ya no se necesita
-        user = User.objects.create_user(**validated_data)  # usa create_user para hash automático
+        with transaction.atomic():
+            user = User.objects.create_user(**validated_data)
+            UserProfile.objects.create(user=user, name=user.username, email=user.email)
         return user
     
 class WaterEntrySerializer(serializers.ModelSerializer):

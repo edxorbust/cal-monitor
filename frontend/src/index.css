@@ -167,3 +167,6 @@ p {
 }
 
 
+
+/* Keep forms within the viewport on narrow screens. */
+*, *::before, *::after { box-sizing: border-box; }

@@ -5,3 +5,16 @@ ENV/
 env/
 ENV.bak/
 venv.bak/
+
+# Local configuration and macOS files
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Django collected assets (generated inside the production image)
+backend/staticfiles/
